@@ -8,16 +8,16 @@ import cbnu.campingmaster.member.exception.MemberIdAlreadyExistsException;
 import cbnu.campingmaster.member.exception.MemberNotFoundException;
 import cbnu.campingmaster.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static java.util.regex.Pattern.matches;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Member register(MemberRegisterDto memberRegisterDto){
@@ -27,18 +27,17 @@ public class MemberService {
             throw new MemberEmailAlreadyExistsException(memberRegisterDto.getEmail() + "는 이미 존재하는 이메일입니다.");
         }
 
-        String encodedPassword = passwordEncoder.encode(memberRegisterDto.getMemberPw());
         Member member = Member.createMember(memberRegisterDto);
-        member.setMemberPw(encodedPassword);
         memberRepository.save(member);
         return member;
     }
 
+    @Transactional
     public Member login(MemberSignInDto memberSignInDto) {
         Member member = memberRepository.findByMemberId(memberSignInDto.getMemberId())
                 .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 아이디입니다."));
 
-        if (!passwordEncoder.matches(memberSignInDto.getMemberPw(), member.getMemberPw()))
+        if (!matches(memberSignInDto.getMemberPw(), member.getMemberPw()))
             throw new InvalidPasswordException("비밀번호가 일치하지 않습니다.");
 
         return member;
