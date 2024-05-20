@@ -43,6 +43,7 @@ public class GoCampingController {
         JSONArray result = goCampingService.searchByKeyword(keyword);
         return ResponseEntity.ok(result.toString());
     }
+
     @GetMapping("/get-location")
     public ResponseEntity<?> locationSearch(@RequestParam String mapX,
                                             @RequestParam String mapY,
