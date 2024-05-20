@@ -3,7 +3,6 @@ package cbnu.campingmaster.member.domain;
 import cbnu.campingmaster.member.dto.MemberRegisterDto;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity //엔티티 정의
 @Getter

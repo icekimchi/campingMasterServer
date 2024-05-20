@@ -1,12 +1,8 @@
 package cbnu.campingmaster.gocamping;
 
-import cbnu.campingmaster.gocamping.dto.GoCampingResponseDto;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.*;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -15,11 +11,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 @Component
 @RequiredArgsConstructor
@@ -60,6 +53,16 @@ public class GoCampingApiManager {
         conn.disconnect();
         System.out.println(sb.toString());
         return sb.toString();
+    }
+
+    public String makeBaseUrl() {
+        return UriComponentsBuilder.fromHttpUrl(BASE_URL + "/basedList")
+                .queryParam("numOfRows", 3826)
+                .queryParam("MobileOS", mobileOS)
+                .queryParam("MobileApp", mobileApp)
+                .queryParam("_type", "json")
+                .queryParam("serviceKey", serviceKey)
+                .toUriString();
     }
 
     public String makeKeywordUrl(String keyword) {

@@ -1,6 +1,6 @@
 package cbnu.campingmaster.member.service;
 import cbnu.campingmaster.member.domain.Member;
-import cbnu.campingmaster.member.dto.MemberSignInDto;
+import cbnu.campingmaster.member.dto.MemberLoginDto;
 import cbnu.campingmaster.member.dto.MemberRegisterDto;
 import cbnu.campingmaster.member.exception.InvalidPasswordException;
 import cbnu.campingmaster.member.exception.MemberEmailAlreadyExistsException;
@@ -33,11 +33,11 @@ public class MemberService {
     }
 
     @Transactional
-    public Member login(MemberSignInDto memberSignInDto) {
-        Member member = memberRepository.findByMemberId(memberSignInDto.getMemberId())
+    public Member login(MemberLoginDto memberLoginDto) {
+        Member member = memberRepository.findByMemberId(memberLoginDto.getMemberId())
                 .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 아이디입니다."));
 
-        if (!matches(memberSignInDto.getMemberPw(), member.getMemberPw()))
+        if (!matches(memberLoginDto.getMemberPw(), member.getMemberPw()))
             throw new InvalidPasswordException("비밀번호가 일치하지 않습니다.");
 
         return member;
