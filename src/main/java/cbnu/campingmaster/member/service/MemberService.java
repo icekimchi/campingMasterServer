@@ -17,14 +17,15 @@ import static java.util.regex.Pattern.matches;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService {
+
     private final MemberRepository memberRepository;
 
     @Transactional
     public Member register(MemberRegisterDto memberRegisterDto){
         if (memberRepository.existsByMemberId(memberRegisterDto.getMemberId())){
-            throw new MemberIdAlreadyExistsException(memberRegisterDto.getMemberId() + "는 이미 존재하는 아이디입니다.");
+            throw new MemberIdAlreadyExistsException(memberRegisterDto.getMemberId());
         } else if (memberRepository.existsByEmail(memberRegisterDto.getEmail())) {
-            throw new MemberEmailAlreadyExistsException(memberRegisterDto.getEmail() + "는 이미 존재하는 이메일입니다.");
+            throw new MemberEmailAlreadyExistsException(memberRegisterDto.getEmail());
         }
 
         Member member = Member.createMember(memberRegisterDto);
@@ -35,10 +36,10 @@ public class MemberService {
     @Transactional
     public Member login(MemberLoginDto memberLoginDto) {
         Member member = memberRepository.findByMemberId(memberLoginDto.getMemberId())
-                .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 아이디입니다."));
+                .orElseThrow(() -> new MemberNotFoundException());
 
         if (!matches(memberLoginDto.getMemberPw(), member.getMemberPw()))
-            throw new InvalidPasswordException("비밀번호가 일치하지 않습니다.");
+            throw new InvalidPasswordException();
 
         return member;
     }
