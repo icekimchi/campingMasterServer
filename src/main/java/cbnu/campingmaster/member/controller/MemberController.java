@@ -18,8 +18,7 @@ import java.util.Map;
 public class MemberController {
     private final MemberService memberService;
 
-    //회원가입
-    @PostMapping("/members/signup")    // name값을 requestparam에 담아온다
+    @PostMapping("/members/signup")
     public ResponseEntity<Map<String, Object>> save(@RequestBody MemberRegisterDto memberRegisterDto) {
         memberService.register(memberRegisterDto);
         Map<String, Object> response = new HashMap<>();
@@ -29,7 +28,6 @@ public class MemberController {
         return ResponseEntity.ok(response);
     }
 
-    // 로그인
     @PostMapping("/members/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody MemberLoginDto memberLoginDto) {
         memberService.login(memberLoginDto);

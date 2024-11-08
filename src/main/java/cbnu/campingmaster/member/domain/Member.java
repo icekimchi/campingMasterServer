@@ -4,11 +4,12 @@ import cbnu.campingmaster.member.dto.MemberRegisterDto;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity //엔티티 정의
+@Entity
 @Getter
 @Setter
 public class Member{
-    @Id //기본키를 의미. 반드시 기본키를 가져야함.
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
