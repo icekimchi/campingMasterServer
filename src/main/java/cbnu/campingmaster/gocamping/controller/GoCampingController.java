@@ -1,6 +1,10 @@
 package cbnu.campingmaster.gocamping.controller;
 
+import cbnu.campingmaster.gocamping.domain.Campsite;
+import cbnu.campingmaster.gocamping.dto.CampingSiteDto;
 import cbnu.campingmaster.gocamping.dto.GoCampingItemDto;
+import cbnu.campingmaster.gocamping.response.ApiResponse;
+import cbnu.campingmaster.gocamping.response.ApiSuccessStatus;
 import cbnu.campingmaster.gocamping.service.CampsiteService;
 import cbnu.campingmaster.gocamping.service.GoCampingService;
 import lombok.RequiredArgsConstructor;
@@ -25,17 +29,16 @@ public class GoCampingController {
     private final CampsiteService campsiteService;
 
     @GetMapping("/basedList")
-    public ResponseEntity<List<GoCampingItemDto>> baseSearch() throws IOException {
+    public ResponseEntity<ApiResponse<List<CampingSiteDto>>> baseSearch() throws IOException {
         JSONArray jsonArray = goCampingService.baseSearch();
-        List<GoCampingItemDto> dtos = new ArrayList<>();
+        List<CampingSiteDto> campingSiteDtoList = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
-            GoCampingItemDto dto = new GoCampingItemDto();
-            goCampingService.setDtoFields(dto, jsonObject);
-            dtos.add(dto);
-            campsiteService.saveCampsite(dto);
+            Campsite campsite = campsiteService.saveCampsite(jsonObject);
+            CampingSiteDto dto = campsite.toDto();
+            campingSiteDtoList.add(dto);
         }
-        return ResponseEntity.ok(dtos);
+        return ApiResponse.success(ApiSuccessStatus.BASE_SEARCH_SUCCESS, campingSiteDtoList);
     }
 
     @GetMapping("/get-keyword")
