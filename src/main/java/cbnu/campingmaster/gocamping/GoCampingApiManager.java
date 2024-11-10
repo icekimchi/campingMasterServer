@@ -1,13 +1,11 @@
 package cbnu.campingmaster.gocamping;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,9 +16,8 @@ import java.net.URL;
 @RequiredArgsConstructor
 public class GoCampingApiManager {
 
-    private final ObjectMapper objectMapper;
-    private final String BASE_URL = "http://apis.data.go.kr/B551011/GoCamping";
-    private final String serviceKey = "t1NG5TWAnczu5ccF0RpGt3KABH21fjDCWTQoHNR3vpbmOsEBIRO4ayLNdzV3GGAuwTeEAfS2oDa9dd3FB27naQ==";
+    private final String BASE_URL = System.getenv("GOCAMPING_BASEURL");
+    private final String serviceKey = System.getenv("GOCAMPING_KEY");
     private final String mobileOS = "ETC";
     private final String mobileApp = "campingmaster";
 
@@ -86,6 +83,4 @@ public class GoCampingApiManager {
                 .queryParam("radius", radius)
                 .toUriString();
     }
-
-
 }

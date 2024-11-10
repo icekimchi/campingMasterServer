@@ -1,12 +1,9 @@
 package cbnu.campingmaster.gocamping.controller;
 
-import cbnu.campingmaster.gocamping.dto.GoCampingItemDto;
-import cbnu.campingmaster.gocamping.dto.QueryCampsiteDto;
-import cbnu.campingmaster.gocamping.service.GoCampingService;
+import cbnu.campingmaster.gocamping.dto.CampingSiteDto;
 import cbnu.campingmaster.gocamping.service.QueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +29,7 @@ public class QueryController {
                 return ResponseEntity.badRequest().body("Invalid request payload");
             }
 
-            List<QueryCampsiteDto> results = queryService.executeQuery(sqlQuery, new Object[]{param});
+            List<CampingSiteDto> results = queryService.executeQuery(sqlQuery, new Object[]{param});
             return ResponseEntity.ok(results);
         } catch (Exception e) {
             log.error("Error executing query", e);

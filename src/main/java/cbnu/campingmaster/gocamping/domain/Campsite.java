@@ -1,5 +1,6 @@
 package cbnu.campingmaster.gocamping.domain;
 
+import cbnu.campingmaster.gocamping.dto.CampingSiteDto;
 import cbnu.campingmaster.gocamping.dto.GoCampingItemDto;
 import cbnu.campingmaster.member.domain.Member;
 import cbnu.campingmaster.member.dto.MemberRegisterDto;
@@ -7,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.json.JSONObject;
 
 @Entity //엔티티 정의
 @Getter
@@ -37,28 +39,44 @@ public class Campsite {
     private boolean petAllowed; //애완동물출입,
     private String ImgUrl; //대표이미지
 
-    public static Campsite createCampsite(GoCampingItemDto goCampingItemDto) {
-        Campsite campsite = new Campsite();
-        campsite.contentId = goCampingItemDto.getContentId();
-        campsite.siteName = goCampingItemDto.getFacltNm();
-        campsite.lineIntro = goCampingItemDto.getLineIntro();
-        campsite.category = goCampingItemDto.getInduty();
-        campsite.featureNm = goCampingItemDto.getFeatureNm();
-        campsite.season = goCampingItemDto.getOperPdCl();
-        campsite.address = goCampingItemDto.getAddr1();
-        campsite.locationCategory = goCampingItemDto.getLctCl();
-        campsite.tel = goCampingItemDto.getTel();
-        campsite.homepageUrl = goCampingItemDto.getHomepage();
-        campsite.nearbyFacilities = goCampingItemDto.getPosblFcltyCl();
-        campsite.ReserveUrl = goCampingItemDto.getResveUrl();
-        campsite.themaEnvrnCl = goCampingItemDto.getThemaEnvrnCl();
-        if (goCampingItemDto.getAnimalCmgCl() != null && goCampingItemDto.getAnimalCmgCl().contains("불가능")) {
-            campsite.petAllowed = false;
-        } else {
-            campsite.petAllowed = true;
-        }
-        campsite.ImgUrl = goCampingItemDto.getFirstImageUrl();
+    // 엔티티를 DTO로 변환하는 메서드 추가
+    public CampingSiteDto toDto() {
+        CampingSiteDto dto = new CampingSiteDto();
+        dto.setContentId(this.contentId);
+        dto.setSiteName(this.siteName);
+        dto.setFeatureNm(this.featureNm);
+        dto.setAddress(this.address);
+        dto.setLineIntro(this.lineIntro);
+        dto.setCategory(this.category);
+        dto.setLocationCategory(this.locationCategory);
+        dto.setTel(this.tel);
+        dto.setHomepageUrl(this.homepageUrl);
+        dto.setSeason(this.season);
+        dto.setReserveUrl(this.ReserveUrl);
+        dto.setNearbyFacilities(this.nearbyFacilities);
+        dto.setThemaEnvrnCl(this.themaEnvrnCl);
+        dto.setPetAllowed(this.petAllowed);
+        dto.setImgUrl(this.ImgUrl);
+        return dto;
+    }
 
+    public static Campsite createCampsite(JSONObject jsonObject) {
+        Campsite campsite = new Campsite();
+        campsite.contentId = jsonObject.optLong("contentId");
+        campsite.siteName = jsonObject.optString("facltNm");
+        campsite.lineIntro = jsonObject.optString("lineIntro");
+        campsite.category = jsonObject.optString("induty");
+        campsite.featureNm = jsonObject.optString("featureNm");
+        campsite.season = jsonObject.optString("operPdCl");
+        campsite.address = jsonObject.optString("addr1");
+        campsite.locationCategory = jsonObject.optString("lctCl");
+        campsite.tel = jsonObject.optString("tel");
+        campsite.homepageUrl = jsonObject.optString("homepage");
+        campsite.nearbyFacilities = jsonObject.optString("posblFcltyCl");
+        campsite.ReserveUrl = jsonObject.getString("resveUrl");
+        campsite.themaEnvrnCl = jsonObject.optString("themaEnvrnCl");
+        campsite.petAllowed = !jsonObject.optString("animalCmgCl").contains("불가능");
+        campsite.ImgUrl = jsonObject.optString("firstImageUrl");
         return campsite;
     }
 }

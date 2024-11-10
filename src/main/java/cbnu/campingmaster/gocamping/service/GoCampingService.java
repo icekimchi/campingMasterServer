@@ -1,9 +1,11 @@
 package cbnu.campingmaster.gocamping.service;
 
 import cbnu.campingmaster.gocamping.GoCampingApiManager;
+import cbnu.campingmaster.gocamping.dto.CampingSiteDto;
 import cbnu.campingmaster.gocamping.dto.GoCampingItemDto;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +19,22 @@ public class GoCampingService {
 
     public JSONArray baseSearch() throws IOException {
         String baseUrl = goCampingApiManager.makeBaseUrl();
+        return getObjects(baseUrl);
+    }
+
+    private JSONArray getObjects(String baseUrl) throws IOException {
         String jsonData = goCampingApiManager.fetch(baseUrl);
+
+        // 응답이 유효한지 확인
+        if (jsonData == null || jsonData.isEmpty()) {
+            throw new IOException("Empty response from API");
+        }
+        try {
+            JSONObject jsonObject = new JSONObject(jsonData);
+        } catch (JSONException e) {
+            System.out.println("Invalid JSON format: " + e.getMessage());
+        }
+
         JSONObject jsonObject = new JSONObject(jsonData);
         JSONObject response = jsonObject.getJSONObject("response");
         JSONObject body = response.getJSONObject("body");
@@ -29,14 +46,7 @@ public class GoCampingService {
 
     public JSONArray  searchByKeyword(String keyword) throws IOException {
         String keywordUrl = goCampingApiManager.makeKeywordUrl(keyword);
-        String jsonData = goCampingApiManager.fetch(keywordUrl);
-        JSONObject jsonObject = new JSONObject(jsonData);
-        JSONObject response = jsonObject.getJSONObject("response");
-        JSONObject body = response.getJSONObject("body");
-        JSONObject items = body.getJSONObject("items");
-        JSONArray itemArray = items.getJSONArray("item");
-
-        return itemArray;
+        return getObjects(keywordUrl);
     }
 
     public String searchByLocation(String mapX, String mapY, String radius) throws IOException{
@@ -51,7 +61,6 @@ public class GoCampingService {
         dto.setFacltNm(jsonObject.optString("facltNm"));
         dto.setLineIntro(jsonObject.optString("lineIntro"));
         dto.setIntro(jsonObject.optString("intro"));
-        dto.setInsrncAt(jsonObject.optString("insrncAt"));
         dto.setHvofBgnde(jsonObject.optString("hvofBgnde"));
         dto.setFeatureNm(jsonObject.optString("featureNm"));
         dto.setInduty(jsonObject.optString("induty"));
@@ -60,7 +69,6 @@ public class GoCampingService {
         dto.setSigunguNm(jsonObject.optString("sigunguNm"));
         dto.setZipcode(jsonObject.optString("zipcode"));
         dto.setAddr1(jsonObject.optString("addr1"));
-        dto.setAddr2(jsonObject.optString("addr2"));
         dto.setMapX(jsonObject.optString("mapX"));
         dto.setMapY(jsonObject.optString("mapY"));
         dto.setTel(jsonObject.optString("tel"));
@@ -85,7 +93,5 @@ public class GoCampingService {
         dto.setAnimalCmgCl(jsonObject.optString("animalCmgCl"));
         dto.setTourEraCl(jsonObject.optString("tourEraCl"));
         dto.setFirstImageUrl(jsonObject.optString("firstImageUrl"));
-        dto.setCreatedtime(jsonObject.optString("createdtime"));
-        dto.setModifiedtime(jsonObject.optString("modifiedtime"));
     }
 }
