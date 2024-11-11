@@ -49,49 +49,10 @@ public class GoCampingService {
         return getObjects(keywordUrl);
     }
 
-    public String searchByLocation(String mapX, String mapY, String radius) throws IOException{
+    public String searchByLocation(String mapX, String mapY, String radius) throws IOException {
         String locationUrl = goCampingApiManager.makeLocationUrl(mapX, mapY, radius);
         System.out.println("locationUrl = " + locationUrl);
         String jsonData = goCampingApiManager.fetch(locationUrl);
         return jsonData;
-    }
-
-    public void setDtoFields(GoCampingItemDto dto, JSONObject jsonObject) {
-        dto.setContentId(jsonObject.optLong("contentId"));
-        dto.setFacltNm(jsonObject.optString("facltNm"));
-        dto.setLineIntro(jsonObject.optString("lineIntro"));
-        dto.setIntro(jsonObject.optString("intro"));
-        dto.setHvofBgnde(jsonObject.optString("hvofBgnde"));
-        dto.setFeatureNm(jsonObject.optString("featureNm"));
-        dto.setInduty(jsonObject.optString("induty"));
-        dto.setLctCl(jsonObject.optString("lctCl"));
-        dto.setDoNm(jsonObject.optString("doNm"));
-        dto.setSigunguNm(jsonObject.optString("sigunguNm"));
-        dto.setZipcode(jsonObject.optString("zipcode"));
-        dto.setAddr1(jsonObject.optString("addr1"));
-        dto.setMapX(jsonObject.optString("mapX"));
-        dto.setMapY(jsonObject.optString("mapY"));
-        dto.setTel(jsonObject.optString("tel"));
-        dto.setHomepage(jsonObject.optString("homepage"));
-        dto.setGnrlSiteCo(jsonObject.optString("gnrlSiteCo"));
-        dto.setAutoSiteCo(jsonObject.optString("autoSiteCo"));
-        dto.setGlampSiteCo(jsonObject.optString("glampSiteCo"));
-        dto.setCaravSiteCo(jsonObject.optString("caravSiteCo"));
-        dto.setIndvdlCaravSiteCo(jsonObject.optString("indvdlCaravSiteCo"));
-        dto.setGlampInnerFclty(jsonObject.optString("glampInnerFclty"));
-        dto.setCaravInnerFclty(jsonObject.optString("caravInnerFclty"));
-        dto.setOperPdCl(jsonObject.optString("operPdCl"));
-        dto.setResveUrl(jsonObject.getString("resveUrl"));
-        dto.setOperDeCl(jsonObject.optString("operDeCl"));
-        dto.setPosblFcltyCl(jsonObject.optString("posblFcltyCl"));
-        dto.setClturEventAt(jsonObject.optString("clturEventAt"));
-        dto.setClturEvent(jsonObject.optString("clturEvent"));
-        dto.setExprnProgrmAt(jsonObject.optString("exprnProgrmAt"));
-        dto.setExprnProgrm(jsonObject.optString("exprnProgrm"));
-        dto.setThemaEnvrnCl(jsonObject.optString("themaEnvrnCl"));
-        dto.setEqpmnLendCl(jsonObject.optString("eqpmnLendCl"));
-        dto.setAnimalCmgCl(jsonObject.optString("animalCmgCl"));
-        dto.setTourEraCl(jsonObject.optString("tourEraCl"));
-        dto.setFirstImageUrl(jsonObject.optString("firstImageUrl"));
     }
 }

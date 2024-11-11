@@ -18,6 +18,16 @@ public class QueryService {
         return jdbcTemplate.query(sqlQuery, params, new QueryCampsiteDtoRowMapper());
     }
 
+    public String makeKeywordQuery(String keyword, String param){
+        if (param=="pet_allowed")
+            return "SELECT * FROM campsite WHERE pet_allowed=1";
+        return "SELECT * FROM campsite WHERE" + keyword +  "like" + param;
+    }
+
+    public String makeRegionQuery(String keyword, String region){
+        return "SELECT * FROM campsite WHERE address LIKE '%" + region + "%'";
+    }
+
     private static class QueryCampsiteDtoRowMapper implements RowMapper<CampingSiteDto> {
         @Override
         public CampingSiteDto mapRow(java.sql.ResultSet rs, int rowNum) throws java.sql.SQLException {
