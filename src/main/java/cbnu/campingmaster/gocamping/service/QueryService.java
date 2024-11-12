@@ -1,12 +1,18 @@
 package cbnu.campingmaster.gocamping.service;
 
 import cbnu.campingmaster.gocamping.dto.CampingSiteDto;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -28,11 +34,64 @@ public class QueryService {
         return "SELECT * FROM campsite WHERE address LIKE '%" + region + "%'";
     }
 
+    public QueryResult makeFilterQuery(Map<String, List<String>> filters) {
+        StringBuilder queryBuilder = new StringBuilder("SELECT * FROM campsite WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+
+        // 카테고리 필터 처리
+        if (filters.containsKey("category") && !filters.get("category").isEmpty()) {
+            queryBuilder.append(" AND category IN (");
+            addFilterParameters(queryBuilder, filters.get("category"), params);
+            queryBuilder.append(")");
+        }
+
+        // 자연환경 필터 처리
+        if (filters.containsKey("nature") && !filters.get("nature").isEmpty()) {
+            queryBuilder.append(" AND (");
+            List<String> natureFilters = filters.get("nature");
+            for (int i = 0; i < natureFilters.size(); i++) {
+                if (i > 0) queryBuilder.append(" OR ");
+                queryBuilder.append("nearby_facilities LIKE ?");
+                params.add("%" + natureFilters.get(i) + "%");
+            }
+            queryBuilder.append(")");
+        }
+
+        // 테마여행 필터 처리
+        if (filters.containsKey("theme") && !filters.get("theme").isEmpty()) {
+            queryBuilder.append(" AND (");
+            List<String> themeFilters = filters.get("theme");
+            for (int i = 0; i < themeFilters.size(); i++) {
+                if (i > 0) queryBuilder.append(" OR ");
+                queryBuilder.append("thema_envrn_cl LIKE ?");
+                params.add("%" + themeFilters.get(i) + "%");
+            }
+            queryBuilder.append(")");
+        }
+
+        return new QueryResult(queryBuilder.toString(), params.toArray());
+    }
+
+    private void addFilterParameters(StringBuilder queryBuilder, List<String> values, List<Object> params) {
+        for (int i = 0; i < values.size(); i++) {
+            if (i > 0) queryBuilder.append(",");
+            queryBuilder.append("?");
+            params.add(values.get(i));
+        }
+    }
+
+    // 쿼리와 파라미터를 함께 반환하기 위한 내부 클래스
+    @Getter
+    @AllArgsConstructor
+    public static class QueryResult {
+        private final String query;
+        private final Object[] params;
+    }
+
     private static class QueryCampsiteDtoRowMapper implements RowMapper<CampingSiteDto> {
         @Override
-        public CampingSiteDto mapRow(java.sql.ResultSet rs, int rowNum) throws java.sql.SQLException {
+        public CampingSiteDto mapRow(ResultSet rs, int rowNum) throws SQLException {
             CampingSiteDto dto = new CampingSiteDto();
-            // Set fields from result set to dto
             dto.setContentId(rs.getLong("content_id"));
             dto.setAddress(rs.getString("address"));
             dto.setCategory(rs.getString("category"));
