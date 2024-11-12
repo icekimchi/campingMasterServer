@@ -36,4 +36,24 @@ public class QueryController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while executing the query");
         }
     }
+
+    @PostMapping("/makeQuery")
+    public ResponseEntity<?> makeQuery(@RequestBody Map<String, Object> request) {
+        try {
+            String sqlQuery = (String) request.get("sqlQuery");
+            Object param = request.get("param");
+
+            // Validate sqlQuery and param
+            if (sqlQuery == null || param == null) {
+                return ResponseEntity.badRequest().body("Invalid request payload");
+            }
+
+
+            List<CampingSiteDto> results = queryService.executeQuery(sqlQuery, new Object[]{param});
+            return ResponseEntity.ok(results);
+        } catch (Exception e) {
+            log.error("Error executing query", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while executing the query");
+        }
+    }
 }

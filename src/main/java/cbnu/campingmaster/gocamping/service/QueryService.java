@@ -21,7 +21,7 @@ public class QueryService {
     public String makeKeywordQuery(String keyword, String param){
         if (param=="pet_allowed")
             return "SELECT * FROM campsite WHERE pet_allowed=1";
-        return "SELECT * FROM campsite WHERE" + keyword +  "like" + param;
+        return "SELECT * FROM campsite WHERE" + keyword +  "LIKE '%" + keyword + "%'";
     }
 
     public String makeRegionQuery(String keyword, String region){
@@ -40,6 +40,8 @@ public class QueryService {
             dto.setHomepageUrl(rs.getString("homepage_url"));
             dto.setImgUrl(rs.getString("img_url"));
             dto.setLineIntro(rs.getString("line_intro"));
+            dto.setMapX(rs.getString("mapX"));
+            dto.setMapY(rs.getString("mapY"));
             dto.setLocationCategory(rs.getString("location_category"));
             dto.setNearbyFacilities(rs.getString("nearby_facilities"));
             dto.setReserveUrl(rs.getString("reserve_url"));

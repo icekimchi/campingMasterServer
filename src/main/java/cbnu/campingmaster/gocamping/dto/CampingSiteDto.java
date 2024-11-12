@@ -22,6 +22,8 @@ public class CampingSiteDto {
     private String category;
     private String locationCategory;
     private String tel; //전화번호
+    private String mapX;
+    private String mapY;
     private String homepageUrl; //홈페이지링크
     private String season; //
     private String ReserveUrl; //예약사이트

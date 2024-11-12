@@ -1,9 +1,6 @@
 package cbnu.campingmaster.gocamping.domain;
 
 import cbnu.campingmaster.gocamping.dto.CampingSiteDto;
-import cbnu.campingmaster.gocamping.dto.GoCampingItemDto;
-import cbnu.campingmaster.member.domain.Member;
-import cbnu.campingmaster.member.dto.MemberRegisterDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NonNull;
@@ -26,6 +23,8 @@ public class Campsite {
     private String featureNm;
     @Column(columnDefinition = "LONGTEXT")
     private String address;
+    private String mapX;
+    private String mapY;
     private String lineIntro;
     private String category;
     private String locationCategory;
@@ -46,6 +45,8 @@ public class Campsite {
         dto.setSiteName(this.siteName);
         dto.setFeatureNm(this.featureNm);
         dto.setAddress(this.address);
+        dto.setMapX(this.mapX);
+        dto.setMapY(this.mapY);
         dto.setLineIntro(this.lineIntro);
         dto.setCategory(this.category);
         dto.setLocationCategory(this.locationCategory);
@@ -69,6 +70,8 @@ public class Campsite {
         campsite.featureNm = jsonObject.optString("featureNm");
         campsite.season = jsonObject.optString("operPdCl");
         campsite.address = jsonObject.optString("addr1");
+        campsite.mapX = jsonObject.optString("mapX");
+        campsite.mapY = jsonObject.optString("mapY");
         campsite.locationCategory = jsonObject.optString("lctCl");
         campsite.tel = jsonObject.optString("tel");
         campsite.homepageUrl = jsonObject.optString("homepage");
