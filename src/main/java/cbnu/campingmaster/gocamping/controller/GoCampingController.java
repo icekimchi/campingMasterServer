@@ -3,6 +3,7 @@ package cbnu.campingmaster.gocamping.controller;
 import cbnu.campingmaster.gocamping.domain.Campsite;
 import cbnu.campingmaster.gocamping.dto.CampingSiteDto;
 import cbnu.campingmaster.gocamping.dto.GoCampingItemDto;
+import cbnu.campingmaster.gocamping.dto.LocationSearchDto;
 import cbnu.campingmaster.gocamping.response.ApiResponse;
 import cbnu.campingmaster.gocamping.response.ApiSuccessStatus;
 import cbnu.campingmaster.gocamping.service.CampsiteService;
@@ -12,9 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,10 +47,21 @@ public class GoCampingController {
     }
 
     @GetMapping("/get-location")
-    public ResponseEntity<?> locationSearch(@RequestParam String mapX,
-                                            @RequestParam String mapY,
-                                            @RequestParam String radius) throws IOException {
-        String result = goCampingService.searchByLocation(mapX, mapY, radius);
-        return ResponseEntity.ok(result.toString());
+    public ResponseEntity<List<CampingSiteDto>> locationSearch(@RequestParam String mapX,
+                                                                            @RequestParam String mapY, @RequestParam String radius) throws IOException {
+        JSONArray result = goCampingService.searchByLocation(mapX, mapY, radius);
+        List<CampingSiteDto> campingSiteDtoList = new ArrayList<>();
+        for (int i = 0; i < result.length(); i++) {
+            JSONObject jsonObject = result.getJSONObject(i);
+            Campsite campsite = Campsite.createCampsite(jsonObject);
+            CampingSiteDto dto = campsite.toDto();
+            campingSiteDtoList.add(dto);
+        }
+        return ResponseEntity.ok(campingSiteDtoList);
+    }
+
+    @GetMapping("/detail/{siteName}")
+    public ResponseEntity<Campsite> getSiteDetail(@PathVariable String siteName) throws IOException{
+        return ResponseEntity.ok(goCampingService.searchByName(siteName));
     }
 }

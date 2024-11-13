@@ -12,4 +12,5 @@ import java.util.Optional;
 
 @Repository
 public interface CampsiteRepository extends JpaRepository<Campsite, Long> {
+    Campsite findBySiteName(String siteName);
 }
